@@ -1,0 +1,12 @@
+{
+  "name": "airroutes Demo",
+  "version": "0.1.0",
+  "description": "Simple demo using the airroutes dataset",
+  "title": "Custom apiDoc browser title",
+  "url" : "https://github.com/chupman/airroutes-demo",
+  "sampleUrl": "https://api.github.com/v1",
+  "template": {
+  	"withCompare": true,
+  	"withGenerator": true
+  }
+}

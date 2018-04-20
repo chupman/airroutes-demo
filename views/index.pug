@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 Welcome to #{title}
+  div
+    table
+      tr 
+        td
+          label(for="departureCode") Enter a staring airport code 
+          input(name="departureCode", type="text", id="departureCode", placeholder="SFO")
+        td
+          label(for="destinationCode") Enter a destination airport code 
+          input(name="destinationCode", type="text", id="destinationCode", placeholder="NYC")
+    .image-block
+      img.className#IdName(src="/images/usa.svg" alt="US Map")
