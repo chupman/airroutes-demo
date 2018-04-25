@@ -10,7 +10,7 @@ const csrf = require('csurf')
 
 
 /**
- * @api {get} /routes Request arrays of routes
+ * @api {get} /routes?start=SFO&dest=JFK&limit=3  Request arrays of routes using query strings
  * @apiName GetRoutes
  * @apiGroup Routes
  * @apiVersion 0.1.0

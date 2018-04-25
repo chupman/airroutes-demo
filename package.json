@@ -33,8 +33,10 @@
     "express": "^4.16.3",
     "gremlin": "^2.7.0",
     "http-errors": "~1.6.2",
+    "jquery": "^3.3.1",
     "morgan": "~1.9.0",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "svg.js": "^2.6.4"
   },
   "devDependencies": {
     "chai": "^4.1.2",

@@ -11,5 +11,5 @@ block content
         td
           label(for="destinationCode") Enter a destination airport code 
           input(name="destinationCode", type="text", id="destinationCode", placeholder="NYC")
-  div 
-    object(data="./images/usa.svg" id="svgObject" type="image/svg+xml")
+  div(id="drawing") 
+    img.className#IdName(src="/images/usa.svg" alt="US Map")

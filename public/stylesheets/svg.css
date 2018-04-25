@@ -1,0 +1,11 @@
+path {
+    fill:aqua;
+    stroke:black;
+    pointer-events:all;
+}
+
+path:hover {
+    fill:maroon;
+    stroke:orange;
+    pointer-events:all;
+}
