@@ -6,9 +6,9 @@ ready(function(){
                                                 s.append( loadedFragment );
                                         } );
 //document.querySelector('form').onsubmit = formSubmit
-document.querySelector('form').onsubmit = ajaxPost
+//document.querySelector('form').onsubmit = ajaxPost
 });
-
+// Taken from https://stackoverflow.com/questions/6990729/simple-ajax-form-using-javascript-no-jquery
 /**
  * Takes a form node and sends it over AJAX.
  * @param {HTMLFormElement} form - Form node to send

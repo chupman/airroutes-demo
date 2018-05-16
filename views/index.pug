@@ -3,18 +3,15 @@ extends layout
 block content
   h1 Welcome to #{title}
   div
-    table
-      form(method='GET' action='/routes')
-        tr 
-          td
-            label(for="start") Enter a staring airport code 
-            input(name="start", type="text", id="start", placeholder="SFO")
-          td
-            label(for="dest") Enter a destination airport code 
-            input(name="dest", type="text", id="dest", placeholder="JFK")
-          td
-            label(for="limit") Enter a destination airport code 
-            input(name="limit", type="text", id="limit", placeholder="3")
-          td
-            button.btn.btn-primary(type='submit') Go
+    form(id="routeForm" action="")
+      label(for="start") Enter a staring airport code 
+      input(name="start", type="text", id="start", placeholder="SFO")
+
+      label(for="dest") Enter a destination airport code 
+      input(name="dest", type="text", id="dest", placeholder="JFK")
+
+      label(for="limit") Enter a limit 
+      input(name="limit", type="text", id="limit", placeholder="3")
+
+      input(type='submit', value="Go")
   svg(id="svgmap" width="593.3779761904764" height="318.2870370370371")
