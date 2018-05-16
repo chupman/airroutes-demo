@@ -46,6 +46,8 @@ router.get('/', function getRoutes(req, res, next) {
   // Alternate query
   //client.execute("g.V().has('code', 'SFO').repeat(both().simplePath()).until(has('code','JFK')).path().limit(3)", (err, results) => {
     if (!err) {
+      // clean up the empty labels array that the query returns
+      results = cleanResults(results);
       res.json(results);
     } else {
       res.send(err);
@@ -53,5 +55,12 @@ router.get('/', function getRoutes(req, res, next) {
   });
 
 });
+
+function cleanResults(results) {
+  for (i = 0; i < results.length; i++){
+    delete results[i]["labels"];
+  }
+  return results;
+}
 
 module.exports = router;

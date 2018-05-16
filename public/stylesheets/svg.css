@@ -9,3 +9,15 @@ path:hover {
     stroke:orange;
     pointer-events:all;
 }
+
+line {
+    fill:black;
+    stroke:black;
+    strokeWidth: 5;
+}
+
+line:hover {
+    fill:black;
+    stroke:black;
+    strokeWidth: 5;
+}

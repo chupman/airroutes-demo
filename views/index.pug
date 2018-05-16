@@ -4,11 +4,17 @@ block content
   h1 Welcome to #{title}
   div
     table
-      tr 
-        td
-          label(for="departureCode") Enter a staring airport code 
-          input(name="departureCode", type="text", id="departureCode", placeholder="SFO")
-        td
-          label(for="destinationCode") Enter a destination airport code 
-          input(name="destinationCode", type="text", id="destinationCode", placeholder="NYC")
-  div(id="svgmap")
+      form(method='GET' action='/routes')
+        tr 
+          td
+            label(for="start") Enter a staring airport code 
+            input(name="start", type="text", id="start", placeholder="SFO")
+          td
+            label(for="dest") Enter a destination airport code 
+            input(name="dest", type="text", id="dest", placeholder="JFK")
+          td
+            label(for="limit") Enter a destination airport code 
+            input(name="limit", type="text", id="limit", placeholder="3")
+          td
+            button.btn.btn-primary(type='submit') Go
+  svg(id="svgmap" width="593.3779761904764" height="318.2870370370371")
