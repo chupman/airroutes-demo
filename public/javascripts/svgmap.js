@@ -1,5 +1,5 @@
 // 
-ready(function(){
+/*ready(function(){
 
   var s = Snap("#svgmap");
   var map = Snap.load("./images/usa.svg", function ( loadedFragment ) {
@@ -8,6 +8,7 @@ ready(function(){
 //document.querySelector('form').onsubmit = formSubmit
 //document.querySelector('form').onsubmit = ajaxPost
 });
+*/
 // Taken from https://stackoverflow.com/questions/6990729/simple-ajax-form-using-javascript-no-jquery
 /**
  * Takes a form node and sends it over AJAX.
