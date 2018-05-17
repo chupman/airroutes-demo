@@ -42,7 +42,7 @@ router.get('/', function getRoutes(req, res, next) {
   limit = req.query.limit;
   
   client.execute(`graph = ConfiguredGraphFactory.open("airroutes");g = graph.traversal();
-                  g.V().has('code', '${start}').repeat(out('route').simplePath()).times(3).has('code', '${dest}').path().by('code').limit(${limit})`, (err, results) => {
+                  g.V().has('code', '${start}').repeat(out('route').simplePath()).times(3).has('code', '${dest}').path().by(valueMap()).limit(${limit})`, (err, results) => {
   // Alternate query
   //client.execute("g.V().has('code', 'SFO').repeat(both().simplePath()).until(has('code','JFK')).path().limit(3)", (err, results) => {
     if (!err) {

@@ -13,7 +13,14 @@ document.getElementById("routeForm").onsubmit = function(event) {
 
 function getRoutes() {
   // Take values, perform gremlin query and draw snapsvg lines
-  drawLine() ; 
+  clearLines();
+  drawLine(); 
 //  alert("The form receieved a start of " + start.value + " a dest of " + dest.value + " and a limit of  "+ limit.value);
 }
 
+function clearLines() {
+  var lines = document.getElementsByTagName('line');
+  while (lines[0]) {
+    lines[0].parentNode.removeChild(lines[0]);
+  }
+}
