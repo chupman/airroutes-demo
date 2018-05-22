@@ -18,6 +18,10 @@ function ready(f) {
 function drawLine(x1, y1, x2, y2) {
   var s = Snap("#svgmap");
   s.line(x1, y1, x2, y2);
+  // Added aitport dots here for now as well, may move out to a separate 
+  // function if I add hover over details.
+  s.circle(x1, y1, 5);
+  s.circle(x2, y2, 5);
 }
 
 // Take values, perform gremlin query and draw snapsvg lines

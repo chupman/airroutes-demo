@@ -1,23 +1,35 @@
 path {
-    fill:aqua;
-    stroke:black;
-    pointer-events:all;
+    fill: #0066ff;
+    stroke: black;
+    pointer-events: all;
 }
 
 path:hover {
-    fill:maroon;
-    stroke:orange;
-    pointer-events:all;
+    fill: #cccccc;
+    stroke: #ffffff;
+    pointer-events: all;
 }
 
 line {
-    fill:black;
-    stroke:black;
-    strokeWidth: 5;
+    fill: #ff3300;
+    stroke: #ff3300;
+    stroke-width: 3;
 }
 
 line:hover {
-    fill:black;
-    stroke:black;
-    strokeWidth: 5;
+    fill: #9999ff;
+    stroke: #9999ff;
+    stroke-width: 3;
+}
+
+circle{
+    fill: #ff3300;
+    stroke: #ff3300;
+    stroke-width: 3;
+}
+
+circle:hover {
+    fill: #9999ff;
+    stroke: #9999ff;
+    stroke-width: 3;
 }
