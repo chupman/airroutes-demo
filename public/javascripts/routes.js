@@ -27,9 +27,10 @@ function drawLine(x1, y1, x2, y2) {
 // Take values, perform gremlin query and draw snapsvg lines
 function getRoutes() {
   // query /routes with the params recieved from the form
-  var url = '/routes?start=' + start.value + '&dest=' + dest.value + '&limit=' + limit.value;
+  var url = '/routes?start=' + start.value + '&dest=' + dest.value + '&limit=' + limit.value + '&hops=' + hops.value;
   // Remove any lines that are already drawn on the page
   clearLines();
+  clearCircles();
   // Loop through the array of routes and draw the route segments
   loadRoutes(url, routeWriter);
 }
@@ -38,6 +39,13 @@ function clearLines() {
   var lines = document.getElementsByTagName('line');
   while (lines[0]) {
     lines[0].parentNode.removeChild(lines[0]);
+  }
+}
+
+function clearCircles() {
+  var circles = document.getElementsByTagName('circle');
+  while (circles[0]) {
+    circles[0].parentNode.removeChild(circles[0]);
   }
 }
 
