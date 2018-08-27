@@ -3,7 +3,6 @@ path {
     stroke: black;
     pointer-events: all;
 }
-
 path:hover {
     fill: #cccccc;
     stroke: #ffffff;

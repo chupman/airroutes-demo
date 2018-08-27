@@ -5,55 +5,47 @@ const config = require('../config');
 const Gremlin = require('gremlin');
 const client = Gremlin.createClient(config.port, config.host, {session: true});
 const gremlin = Gremlin.makeTemplateTag(client);
-const CGF = "graph = ConfiguredGraphFactory.open('airroutes');g = graph.traversal();"
+const CGF = "graph = ConfiguredGraphFactory.open('airroutes');g = graph.traversal()"
 const csrf = require('csurf')
 
 
-
 /**
- * @api {get} /airport get properties of an Airport by airport code
- * @apiName GetAirport
- * @apiGroup Airport
+ * @api {get} /airports?start=true&airport="San Fr"  Request arrays of routes using query strings
+ * @apiName GetRoutes
+ * @apiGroup Routes
  * @apiVersion 0.1.0
- * @apiParam {string} code 3 character airport code of starting airport
+ * @apiParam {string} start substrings match desc, code,icao, or city
+ * @apiParam {string} dest substrings match desc, code,icao, or city
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     [
  *       {
- *         id: 4160,
- *         label: "airport",
- *         type: "vertex",
- *         properties: {
- *           country: [
- *             {
- *               id: "16w-37k-4qt",
- *               value: "US"
- *             }
- *           ],
- *           code: [
- *             {
- *               id: "1l4-37k-1l1",
- *               value: "SFO"
- *             }
- *           ],
- *           ...
+ *         "objects": [
+ *           "SFO",
+ *           "ANC",
+ *           "IAH",
+ *           "JFK"
+ *         ]
  *       }
  *     ]
  *
- * @apiError AirportNotFound will return an empty array
+ * @apiError RouteNotFound will return an empty array
  *
  * @apiErrorExample Error-Response:
  *     [ ]
  */
-router.get('/', function(req, res, next) {
-  code = req.query.code;
+router.get('/', function getRoutes(req, res, next) {
+  start = req.query.start == 'true' ? true : false;
+  dest = req.query.dest == 'true' ? true : false;
+  str = req.query.str;
   
-  client.execute(`graph = ConfiguredGraphFactory.open("airroutes");g = graph.traversal();
-                  g.V().has('code', '${code}')`, (err, results) => {
-  // Alternate query
-  //client.execute("g.V().has('code', 'SFO').repeat(both().simplePath()).until(has('code','JFK')).path().limit(3)", (err, results) => {
+  client.execute(`graph = ConfiguredGraphFactory.open('airroutes');g = graph.traversal(); 
+                  g.V().or(has('desc', textContainsRegex('.*${str}.*')), has('code', textContainsPrefix('${str}')),
+                           has('icao', textContainsPrefix('${str}')), has('city', textContainsPrefix('.*${str}.*'))).valueMap('code', 'desc')`, (err, results) => {
     if (!err) {
+      // clean up the empty labels array that the query returns
+      results = cleanResults(results);
       res.json(results);
     } else {
       res.send(err);
@@ -62,59 +54,34 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.get('/string/', function getRoutes(req, res, next) {
+  start = req.query.start == 'true' ? true : false;
+  dest = req.query.dest == 'true' ? true : false;
+  str = req.query.str;
 
-/**
- * @api {post} /airport add a new airport
- * @apiName PostAirport
- * @apiGroup Airport
- * @apiVersion 0.1.0
- * @apiParam {string} code 3 character airport code of starting airport
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     [
- *       {
- *         id: 4160,
- *         label: "airport",
- *         type: "vertex",
- *         properties: {
- *           country: [
- *             {
- *               id: "16w-37k-4qt",
- *               value: "US"
- *             }
- *           ],
- *           code: [
- *             {
- *               id: "1l4-37k-1l1",
- *               value: "SFO"
- *             }
- *           ],
- *           ...
- *       }
- *     ]
- *
- * @apiError AirportNotFound will return an empty array
- *
- * @apiErrorExample Error-Response:
- *     [ ]
- */
-router.post('/', function(req, res) {
-  start = req.body.start;
-  dest = req.body.dest;
-  limit = req.body.limit;
-
-  client.execute(`graph = ConfiguredGraphFactory.open("airroutes");g = graph.traversal();
-                  g.V().has('code', '${start}').repeat(out('route').simplePath()).times(3).has('code', '${dest}').path().by('code').limit(${limit})`, (err, results) => {
-  // Alternate query
-  //client.execute("g.V().has('code', 'SFO').repeat(both().simplePath()).until(has('code','JFK')).path().limit(3)", (err, results) => {
+  client.execute(`graph = ConfiguredGraphFactory.open('airroutes');g = graph.traversal();
+                  g.V().or(has('desc', textRegex('.*${str}.*')), has('code', textPrefix('${str}')),
+                           has('icao', textPrefix('${str}')), has('city', textRegex('.*${str}.*'))).valueMap('code', 'desc')`, (err, results) => {
     if (!err) {
-      res.json({req: req.body, results: results});
+      // clean up the empty labels array that the query returns
+      results = cleanResults(results);
+      res.json(results);
     } else {
       res.send(err);
     }
   });
 
 });
+
+function cleanResults(results) {
+  clean = [];
+  for (i = 0; i < results.length; i++){
+    map = {};
+    map["code"] = results[i]["code"][0];
+    map["desc"] = results[i]["desc"][0];
+    clean[i] = map;
+  }
+  return clean;
+}
 
 module.exports = router;

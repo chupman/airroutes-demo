@@ -2,12 +2,15 @@ ready(function(){
   // Draw the Map on the page
   var s = Snap("#svgmap");
   var map = Snap.load("./images/usa.svg", function(loadedFragment) {s.append( loadedFragment );});
-  // Override the default form behavior 
+  // Override the default form submit behavior 
   document.getElementById("routeForm").onsubmit = function(event) { 
     event.preventDefault();
     getRoutes();
     return false;
   }
+
+  // Add code for autocomplete here
+
 });
 
 function ready(f) {
@@ -35,6 +38,14 @@ function getRoutes() {
   loadRoutes(url, routeWriter);
 }
 
+// read values, perform gremlin query against mixed index for typeahead
+function getAirports() {
+  // query /airports with the params recieved from the form with either the airport name or Code.
+  var url = '/airports?noc='  + formfield.value;
+  // Loop through the array of routes and draw the route segments
+  loadAirports(url, airportWriter);
+}
+
 function clearLines() {
   var lines = document.getElementsByTagName('line');
   while (lines[0]) {
@@ -52,7 +63,6 @@ function clearCircles() {
 function loadRoutes(url, cb) {
   var xhttp;
   xhttp=new XMLHttpRequest();
-//  xhttp.responseType = "json";
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       cb(this.response);
@@ -65,13 +75,9 @@ function loadRoutes(url, cb) {
 }
 
 function routeWriter(routes) {
-//  let routes = xhttp.response;
-//  console.log(routes[1]);
   var i, j;
-  for ( i = 0; i < routes.length; i++) {
-//    console.log(routes);
+  for (i = 0; i < routes.length; i++) {
     for (j = 0; j + 1 < routes[i]["objects"].length; j++) {
-
       //convert coords to pixels
       let x1 = lonToPx(routes[i]["objects"][j]["lon"][0]);
       let x2 = lonToPx(routes[i]["objects"][j + 1]["lon"][0]);
@@ -96,7 +102,8 @@ function latToPx(lat) {
 function lonToPx(lon) {
   // western boundary for svg image aka pixel 0
   const wb = -127.55272679845754;
-  // const east = -64.54920772895363;
+  // for reference the eastern boundary is -64.54920772895363;
+  // lonScale is calculated the same way as latScale
   lonScale = 0.106177717403653;
   lon =  (lon - wb) / lonScale;
   return lon;
