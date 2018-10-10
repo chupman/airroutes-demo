@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form action="/routes" id=routeForm>
+        <label for="start">Starting airport code</label>
+        <input type="text" name="start" id="start" placeholder="SFO">
+
+        <label for="dest">Destination airport code</label>
+        <input type=text" name="dest" id="dest" placeholder="JFK">
+
+        <label for="limit">Routes returned</label>
+            <select name="limit" id="limit">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected="selected">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
+              
+        <label for="hops"># of stops</label>
+            <select name="hops" id="hops">
+                <option value="1">Non-stop</option>
+                <option value="2">1</option>
+                <option value="3" selected="selected">2</option>
+                <option value="4">3</option>
+            </select>
+
+            <input type="submit" value="Go">
+    </form>
+{% endblock %}

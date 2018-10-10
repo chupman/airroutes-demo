@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airroutes Demo</title>
+    <link href="{{ url_for('static', filename='svg.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='auto-complete.css') }}" rel="stylesheet">
+  </head>
+  <body>
+    <div id="routeForm">
+      {% block content %}{% endblock %}
+    </div>
+    <svg id="svgmap" width="593.3779761904764" height="318.2870370370371">
+    </svg>
+    <script src="{{ url_for('static', filename='routes.js') }}"></script>
+    <script src="{{ url_for('static', filename='snap.svg-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='auto-complete.min.js') }}"></script>
+  </body>
+</html>
