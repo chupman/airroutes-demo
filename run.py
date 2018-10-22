@@ -7,10 +7,10 @@ from flask import Flask, render_template, request, jsonify
 
 from janusgraph_python.driver.ClientBuilder import JanusGraphClient
 from janusgraph_python.core.attribute.Text import Text
+from gremlin_python.process.graph_traversal import __
 
 from janusgraph_python.serializer.CircleSerializer import CircleSerializer, Circle
 from janusgraph_python.serializer.GeoShapeDeserializer import GeoShapeDeserializer
-from gremlin_python.process.graph_traversal import __
 
 # All Geoshapes in JanusGraph are identified by `Geoshape`
 # while Relation Identifier by `RelationIdentifier`
@@ -26,7 +26,6 @@ circle_serializer = CircleSerializer
 # Register Serializer and Deserializer with JanusGraphReader and Writer service
 from janusgraph_python.structure.io.GraphsonWriter import JanusGraphSONWriter
 from janusgraph_python.structure.io.GraphsonReader import JanusGraphSONReader
-from janusgraph_python.structure.io.GraphsonReader import JanusGraphSONReader
 
 reader = JanusGraphSONReader().register_deserializer(geoshape_identifier, geoshape_deserializer)
 writer = JanusGraphSONWriter().register_serializer(obj_to_register, circle_serializer)
@@ -35,23 +34,15 @@ writer = JanusGraphSONWriter().register_serializer(obj_to_register, circle_seria
 from gremlin_python.structure.graph import Graph
 from janusgraph_python.driver.ClientBuilder import JanusGraphClient
 
-from gremlin_python import statics
-#from gremlin_python.structure.graph import Graph
-#from gremlin_python.process.graph_traversal import __
-#from gremlin_python.process.strategies import *
-from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
-
-#from gremlin_python.structure.io.graphsonV2d0 import GraphSONWriter
-#from gremlin_python.structure.io.graphsonV2d0 import GraphSONReader
-#from gremlin_python.structure.io.graphsonV2d0 import PathDeserializer
-
-graph = Graph() # no need to create a TinkerGraph
-g = graph.traversal().withRemote(DriverRemoteConnection('ws://localhost:8182/gremlin','airroutes_traversal'))
+from janusgraph_python.core.datatypes.GeoShape import GeoShape
+from janusgraph_python.core.attribute import Geo
 
 
-#connection = JanusGraphClient().connect(url="0.0.0.0", port="8182", graph="airroutes_traversal", graphson_reader=reader, graphson_writer=writer).get_connection()
-# connection = JanusGraphClient().connect(url="0.0.0.0", port="8182", graph="airroutes_traversal",).get_connection()
-#g = Graph().traversal().withRemote(connection)
+
+client = JanusGraphClient().connect(url="0.0.0.0", port="8182", graph="airroutes_traversal", graphson_reader=reader, graphson_writer=writer)
+connection = client.get_connection()
+g = Graph().traversal().withRemote(connection)
+
 out = __.out
 has = __.has
 times = __.times
@@ -80,10 +71,21 @@ def get_routes():
 def get_airports():
     airport = request.args.get('airport')
 
-#    response = g.V().or_(has('desc', Text.textRegex('.*(?i)%s.*' & airport))), has('code', Text.textRegex('.*(?i)%s.*' & airport)), has('icao', Text.textRegex('.*(?i)%s.*' & airport)), has('city', Text.textRegex('.*(?i)%s.*' & airport)).propertyMap('code', 'desc')
-    response = g.V().has('code', Text.textRegex('.*(?i)' + airport + '.*')).valueMap().toList()
+    response = g.V().or_(has('desc', Text.textRegex('.*(?i)' + airport + '.*')), has('code', Text.textRegex('.*(?i)' + airport + '.*')), has('icao', Text.textRegex('.*(?i)' + airport + '.*')), has('city', Text.textRegex('.*(?i)' + airport + '.*'))).valueMap('code','desc').toList()
     return jsonify(ast.literal_eval(response.__str__()))
 
+# Currently has deserialization issues and is not working properly.
+@app.route("/nearby/", methods=['get'])
+def get_nearby():
+    lat = float(request.args.get('lat'))
+    lon = float(request.args.get('lon'))
+    distance = int(request.args.get('distance')) # Will need to convert to float once driver is updated.
+    area = GeoShape.Circle(lon, lat, distance) # Will need to swap lon and lat once it's fixed in the driver.
+#    area = GeoShape.Circle(lat, lon, distance) # Will need to swap lon and lat once it's fixed in the driver.
+
+    response = g.V().has("coords", Geo.geoWithin(area)).valueMap('code', 'desc').toList()
+
+    return jsonify(ast.literal_eval(response.__str__()))
 
 
 if __name__ == '__main__':
