@@ -4,9 +4,9 @@ import ast
 
 from flask import Flask, render_template, request, jsonify
 # JanusGraph Python driver imports
-"""
+
 from janusgraph_python.driver.ClientBuilder import JanusGraphClient
-from janusgraph_python.core.attribute.TextPredicate.Text import Text
+from janusgraph_python.core.attribute.Text import Text
 
 from janusgraph_python.serializer.CircleSerializer import CircleSerializer, Circle
 from janusgraph_python.serializer.GeoShapeDeserializer import GeoShapeDeserializer
@@ -30,20 +30,20 @@ from janusgraph_python.structure.io.GraphsonReader import JanusGraphSONReader
 
 reader = JanusGraphSONReader().register_deserializer(geoshape_identifier, geoshape_deserializer)
 writer = JanusGraphSONWriter().register_serializer(obj_to_register, circle_serializer)
-"""
+
 # Apply the connected reader and writer service while creating JanusGraph connection
 from gremlin_python.structure.graph import Graph
-#from janusgraph_python.driver.ClientBuilder import JanusGraphClient
+from janusgraph_python.driver.ClientBuilder import JanusGraphClient
 
 from gremlin_python import statics
-from gremlin_python.structure.graph import Graph
-from gremlin_python.process.graph_traversal import __
-from gremlin_python.process.strategies import *
+#from gremlin_python.structure.graph import Graph
+#from gremlin_python.process.graph_traversal import __
+#from gremlin_python.process.strategies import *
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 
-from gremlin_python.structure.io.graphsonV2d0 import GraphSONWriter
-from gremlin_python.structure.io.graphsonV2d0 import GraphSONReader
-from gremlin_python.structure.io.graphsonV2d0 import PathDeserializer
+#from gremlin_python.structure.io.graphsonV2d0 import GraphSONWriter
+#from gremlin_python.structure.io.graphsonV2d0 import GraphSONReader
+#from gremlin_python.structure.io.graphsonV2d0 import PathDeserializer
 
 graph = Graph() # no need to create a TinkerGraph
 g = graph.traversal().withRemote(DriverRemoteConnection('ws://localhost:8182/gremlin','airroutes_traversal'))
@@ -75,6 +75,16 @@ def get_routes():
 
     response = g.V().has('code', start).repeat(out('route').simplePath()).times(hops).has('code', dest).path().by(valueMap()).limit(numResults).toList()
     return jsonify(ast.literal_eval(response.__str__()))
+
+@app.route("/airports/", methods=['get'])
+def get_airports():
+    airport = request.args.get('airport')
+
+#    response = g.V().or_(has('desc', Text.textRegex('.*(?i)%s.*' & airport))), has('code', Text.textRegex('.*(?i)%s.*' & airport)), has('icao', Text.textRegex('.*(?i)%s.*' & airport)), has('city', Text.textRegex('.*(?i)%s.*' & airport)).propertyMap('code', 'desc')
+    response = g.V().has('code', Text.textRegex('.*(?i)' + airport + '.*')).valueMap().toList()
+    return jsonify(ast.literal_eval(response.__str__()))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
